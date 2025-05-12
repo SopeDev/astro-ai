@@ -80,8 +80,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-100">
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded shadow-md w-full max-w-md relative">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-700">
+      <form onSubmit={handleSubmit} className="space-y-4 bg-gray-600 p-6 rounded shadow-md w-full max-w-md relative">
         <h1 className="text-xl font-bold mb-4">Enter Your Birth Info</h1>
         <input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full p-2 border rounded" />
         <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full p-2 border rounded" />
