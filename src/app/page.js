@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce'
 
 export default function Home() {
   const [form, setForm] = useState({
-    name: '',
+    // name: '',
     date: '',
     time: '',
     place: '',
@@ -73,7 +73,7 @@ export default function Home() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name: form.name,
+        // name: form.name,
         date: form.date,
         time: form.time,
         place: form.location.displayName
@@ -88,7 +88,7 @@ export default function Home() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gray-700">
       <form onSubmit={handleSubmit} className="space-y-4 bg-gray-600 p-6 rounded shadow-md w-full max-w-md relative">
         <h1 className="text-xl font-bold mb-4">Enter Your Birth Info</h1>
-        <input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full p-2 border rounded" />
+        {/*<input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full p-2 border rounded" />*/}
         <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full p-2 border rounded" />
         <input type="time" name="time" value={form.time} onChange={handleChange} className="w-full p-2 border rounded" />
 
@@ -118,13 +118,9 @@ export default function Home() {
         </div>
 
         {form.location && (
-          <div className="text-sm text-gray-600">
-            📍 Selected: {form.location.displayName} <br />
-            🕒 Timezone Offset: UTC {form.location.timezone >= 0 ? '+' : ''}{form.location.timezone}
-          </div>
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Get My Chart</button>
         )}
 
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Get My Chart</button>
       </form>
     </div>
   )
