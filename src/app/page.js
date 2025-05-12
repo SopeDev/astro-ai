@@ -9,7 +9,8 @@ export default function Home() {
     date: '',
     time: '',
     place: '',
-    location: null // { displayName, lat, lng, timezone }
+    location: null,
+    locationSelected: false
   })
   const [suggestions, setSuggestions] = useState([])
 
@@ -27,20 +28,23 @@ export default function Home() {
   }, 400)
 
   useEffect(() => {
-    if (form.place) {
+    if (form.place && !form.locationSelected) {
       fetchSuggestions(form.place)
     } else {
       setSuggestions([])
     }
-  }, [form.place])
+  }, [form.place, form.locationSelected])
 
   const handleChange = e => {
     const { name, value } = e.target
-    setForm({ ...form, [name]: value })
+    setForm(prev => ({
+      ...prev,
+      [name]: value,
+      locationSelected: name === 'place' ? false : prev.locationSelected
+    }))
   }
 
   const handlePlaceSelect = async (suggestion) => {
-    // Get timezone from TimeZoneDB
     const tzRes = await fetch(`https://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.NEXT_PUBLIC_TIMEZONEDB_API_KEY}&format=json&by=position&lat=${suggestion.lat}&lng=${suggestion.lng}`)
     const tzData = await tzRes.json()
 
@@ -49,12 +53,13 @@ export default function Home() {
       setForm(prev => ({
         ...prev,
         place: suggestion.displayName,
+        locationSelected: true,
         location: {
           ...suggestion,
           timezone
         }
       }))
-      setSuggestions([])
+      setSuggestions([]) // hide suggestions
     } else {
       alert('Could not determine timezone')
     }
