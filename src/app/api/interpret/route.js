@@ -5,11 +5,12 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
 
-console.log('Received formattedPlanets:', formattedPlanets)
 
 export async function POST(req) {
   const body = await req.json()
   const { formattedPlanets } = body // string array, like ["Sun in Libra (185.68°) — 3rd House", ...]
+
+  console.log('Received formattedPlanets:', formattedPlanets)
 
   if (!formattedPlanets || !Array.isArray(formattedPlanets)) {
     return NextResponse.json({ error: 'Missing or invalid data' }, { status: 400 })
