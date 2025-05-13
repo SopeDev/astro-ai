@@ -120,14 +120,13 @@ export async function POST(req) {
         house: getHouseForDegree(planet.fullDegree, houseDegrees)
       }))
 
+    const formattedPlanets = planetHouseMap.map(p => {
+      const deg = p.degree.toFixed(2)
+      return `${p.name} in ${p.sign} (${deg}°) — ${p.house ? `${p.house}th House` : 'Unknown House'}`
+    })
+
     return NextResponse.json({
-      planets: planetHouseMap,
-      rawPlanets: planetData.output,
-      houses: houseData.output,
-      location: displayName,
-      lat,
-      lng,
-      timezone
+      formattedPlanets
     })
   } catch (err) {
     console.error('Caught Error:', err)
