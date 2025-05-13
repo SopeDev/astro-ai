@@ -5,7 +5,6 @@ import debounce from 'lodash.debounce'
 
 export default function Home() {
   const [form, setForm] = useState({
-    // name: '',
     date: '',
     time: '',
     place: '',
@@ -94,32 +93,63 @@ export default function Home() {
 
     console.log('Interpretation:', gptData.interpretation)
   }
+ 
+  // const handleSubmit = async e => {
+  //   e.preventDefault()
+  //   if (!form.location) return alert('Please select a valid location.')
+
+  //   const gptRes = await fetch('/api/interpret', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ formattedPlanets: [
+  //       "Ascendant in Scorpio (4.31°) — 1th House",
+  //       "Sun in Libra (5.68°) — 11th House",
+  //       "Moon in Taurus (15.14°) — 7th House",
+  //       "Mars in Aries (5.14°) — 5th House",
+  //       "Mercury in Libra (27.05°) — 12th House",
+  //       "Jupiter in Gemini (6.09°) — 8th House",
+  //       "Venus in Leo (23.20°) — 10th House",
+  //       "Saturn in Sagittarius (26.62°) — 2th House",
+  //       "Uranus in Sagittarius (27.27°) — 2th House",
+  //       "Neptune in Capricorn (7.44°) — 3th House",
+  //       "Pluto in Scorpio (11.08°) — 1th House",
+  //       "Chiron in Cancer (6.91°) — 9th House",
+  //       "Mean Node in Pisces (12.78°) — 5th House",
+  //       "True Node in Pisces (13.87°) — 5th House",
+  //       "MC in Leo (4.06°) — 10th House"
+  //     ] })
+  //   })
+  //   const gptData = await gptRes.json()
+
+  //   if (gptData.error) {
+  //     console.error('GPT error response:', gptData)
+  //     alert('Failed to generate interpretation. Try again later.')
+  //   } else {
+  //     console.log('Interpretation:', gptData.interpretation)
+  //   }
+  // }
 
   return (
     <div className="min-h-screen grid items-center justify-items-center p-4 bg-gray-700">
       <div className="text-center self-end">
         <p className="p-2 text-xl font-bold">Todos tenemos un rol y propósito en el universo. Espero este pequeño mensaje te lleve más cerca al tuyo...</p>
         <p className="p-2">En la parte de abajo encontrarás una pequeña forma para que ingreses tus datos de nacimiento. Al hacer esto, recibirás un pequeño mensaje de mi parte basado en tu configuración astrológica (planetas).</p>
-        <p className="p-2 italic">*Si no conoces tu hora de nacimiento, no te preocupes, déjala en blanco. Aun así recibirás información valiosa, aunque no tan exacta.</p>
       </div>
-      <form onSubmit={handleSubmit} className="text-center mt-10 self-start space-y-4 bg-gray-600 p-6 rounded shadow-md w-full max-w-md relative">
-        <h1 className="text-xl font-bold mb-4">Enter Your Birth Info</h1>
-        {/*<input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} className="w-full p-2 border rounded" />*/}
-        <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full p-2 border rounded" />
-        <input type="time" name="time" value={form.time} onChange={handleChange} className="w-full p-2 border rounded" />
-
+      <form onSubmit={handleSubmit} className="mt-5 self-start space-y-4 bg-gray-600 p-6 rounded shadow-md w-full max-w-md relative">
+        <h1 className="text-center text-xl font-bold mb-4">Ingresa tus datos aquí:</h1>
+        <label>Lugar: <span className="italic block text-sm">(Ingresa la ciudad y selecciona de la lista de sugerencias)</span></label>
         <div className="relative">
           <input
             type="text"
             name="place"
-            placeholder="Place of birth"
+            placeholder="Lugar de nacimiento"
             value={form.place}
             onChange={handleChange}
             className="w-full p-2 border rounded"
             autoComplete="off"
           />
           {suggestions.length > 0 && (
-            <ul className="absolute z-10 bg-white border border-gray-300 rounded mt-1 w-full max-h-40 overflow-y-auto">
+            <ul className="absolute z-10 bg-gray-700 border border-black rounded mt-1 w-full max-h-40 overflow-y-auto">
               {suggestions.map((sug, idx) => (
                 <li
                   key={idx}
@@ -132,9 +162,13 @@ export default function Home() {
             </ul>
           )}
         </div>
+        <label>Fecha:</label>
+        <input type="date" name="date" placeholder="Fecha de nacimiento" value={form.date} onChange={handleChange} className="w-full p-2 border rounded" />
+        <label>Hora: <span className="italic block text-sm">(Si no conoces tu hora de nacimiento, no te preocupes, déjala en blanco. Aun así recibirás información valiosa)</span></label>
+        <input type="time" name="time" placeholder="Hora de nacimiento" value={form.time} onChange={handleChange} className="w-full p-2 border rounded" />
 
         {form.location && (
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Get My Chart</button>
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Obtener mi lectura</button>
         )}
 
       </form>

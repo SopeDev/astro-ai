@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 export async function POST(req) {
   const body = await req.json()
   const { date, time, place } = body
-  // const { name, date, time, place } = body
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
   try {
