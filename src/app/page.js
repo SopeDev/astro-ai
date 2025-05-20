@@ -28,6 +28,7 @@ export default function Home() {
     })))
   }, 400)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (form.place && !form.locationSelected) {
       fetchSuggestions(form.place)
@@ -109,7 +110,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
       {!continued ? (
         <div className="text-center z-10">
-          <p className="font-cormorant p-2 text-2xl font-bold italic animate-fade-in-slide-up animate-slide-up mb-10">"Todos tenemos un rol y propósito en el universo. Espero este pequeño mensaje te lleve más cerca al tuyo..."</p>
+          <p className="font-cormorant p-2 text-2xl font-bold italic animate-fade-in-slide-up animate-slide-up mb-10">&quot;Todos tenemos un rol y propósito en el universo. Espero este pequeño mensaje te lleve más cerca al tuyo...&quot;</p>
           <button onClick={handleContinue} className="bg-blue-600 text-white px-6 py-2 rounded animate-fade-in uppercase">Continuar</button>
         </div>
       ) : loading ? (
