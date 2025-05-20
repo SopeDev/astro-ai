@@ -5,7 +5,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 })
 
-
 export async function POST(req) {
   const body = await req.json()
   const { formattedPlanets } = body // string array, like ["Sun in Libra (185.68°) — 3rd House", ...]
@@ -31,7 +30,7 @@ export async function POST(req) {
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages,
-      temperature: 0.6,
+      temperature: 0.2,
       max_tokens: 1000
     })
 
@@ -53,5 +52,4 @@ export async function POST(req) {
       details: err.message || 'No error message available'
     }, { status: 500 })
   }
-
 }

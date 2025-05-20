@@ -125,7 +125,11 @@ export async function POST(req) {
     })
 
     return NextResponse.json({
-      formattedPlanets
+      formattedPlanets,
+      astroParams,
+      planetData,
+      houseData,
+      planetHouseMap
     })
   } catch (err) {
     console.error('Caught Error:', err)
