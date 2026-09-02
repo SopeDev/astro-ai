@@ -50,32 +50,23 @@ export default function Home() {
     }))
   }
 
-  const handlePlaceSelect = async (suggestion) => {
-    const tzRes = await fetch(`https://api.timezonedb.com/v2.1/get-time-zone?key=${process.env.NEXT_PUBLIC_TIMEZONEDB_API_KEY}&format=json&by=position&lat=${suggestion.lat}&lng=${suggestion.lng}`)
-    const tzData = await tzRes.json()
-
-    if (tzData.status === 'OK') {
-      const timezone = parseFloat(tzData.gmtOffset) / 3600
-      setForm(prev => ({
-        ...prev,
-        place: suggestion.displayName,
-        locationSelected: true,
-        location: {
-          ...suggestion,
-          timezone
-        }
-      }))
-      setSuggestions([])
-    } else {
-      alert('Could not determine timezone')
+  const handlePlaceSelect = (suggestion) => {
+  setForm(prev => ({
+    ...prev,
+    place: suggestion.displayName,
+    locationSelected: true,
+    location: {
+      ...suggestion // lat, lng
     }
-  }
+  }))
+  setSuggestions([])
+}
 
   const handleSubmit = async e => {
     e.preventDefault()
     if (!form.location) return alert('Por favor selecciona una ciudad válida.')
 
-    setLoading(true)
+    // setLoading(true)
     setInterpretation('')
 
     const astroRes = await fetch('/api/astrology', {
@@ -99,18 +90,18 @@ export default function Home() {
       alert('No se pudo generar la interpretación. Intenta de nuevo más tarde.')
     } else {
       console.log('Interpretation:', gptData.interpretation)
-      setInterpretation(gptData.interpretation.trim())
+      setInterpretation(JSON.parse(gptData.interpretation.trim()))
       setLoading(false)
     }
   }
  
   return (
-    <div className="relative min-h-screen grid items-center justify-items-center p-10 bg-indigo-800 bg-cover bg-center" >
-    {/*<div className="relative min-h-screen grid items-center justify-items-center p-10 bg-gray-700 bg-cover bg-center" style={{ backgroundImage: "url('background.png')" }}>*/}
-      <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
+    // <div className="relative min-h-screen grid items-center justify-items-center p-10 bg-indigo-800 bg-cover bg-center" >
+    <div className="relative min-h-screen grid items-center justify-items-center p-10 bg-gray-700 bg-cover bg-center" style={{ backgroundImage: "url('background.png')" }}>
+      <div className="absolute inset-0 bg-black opacity-80 z-0"></div>
       {!continued ? (
         <div className="text-center z-10">
-          <p className="font-cormorant p-2 text-2xl font-bold italic animate-fade-in-slide-up animate-slide-up mb-10">&quot;Todos tenemos un rol y propósito en el universo. Espero este pequeño mensaje te lleve más cerca al tuyo...&quot;</p>
+          <p className="font-cormorant p-2 text-2xl font-bold italic animate-fade-in-slide-up animate-slide-up mb-10 text-shadow-lg">&quot;Todos tenemos un rol y propósito en el universo. Espero este pequeño mensaje te lleve más cerca al tuyo...&quot;</p>
           <button onClick={handleContinue} className="bg-blue-600 text-white px-6 py-2 rounded animate-fade-in uppercase">Continuar</button>
         </div>
       ) : loading ? (
@@ -122,10 +113,13 @@ export default function Home() {
           <p className="text-lg italic">Por favor espera mientras se genera tu interpretación...</p>
         </div>
       ) : interpretation ? (
-        <div className="z-10 bg-[#1f2938cc] p-6 rounded-2xl text-white shadow-xl max-w-xl w-full space-y-6">
-          <p className="whitespace-pre-line leading-relaxed">{interpretation}</p>
+        <div className="z-10 bg-[#1f2938cc] p-6 rounded-2xl text-white shadow-xl max-w-xl w-full space-y-6 text-center">
+          <p className="text-lg whitespace-pre-line leading-relaxed">{interpretation.short}</p>
+          <p className="text-lg whitespace-pre-line leading-relaxed">{interpretation.mission}</p>
+          <button className="mt-4 px-6 py-2 bg-blue-600 rounded text-white hover:bg-blue-700 mb-0">Leer más...</button>
+          <p className="whitespace-pre-line leading-relaxed hidden">{interpretation.long}</p>
           <div className="text-center">
-            <button className="mt-4 px-6 py-2 bg-blue-600 rounded text-white hover:bg-blue-700">
+            <button className="mt-4 px-6 py-2 bg-blue-600 rounded text-white hover:bg-blue-700 hidden">
               Descargar interpretación
             </button>
           </div>
@@ -136,7 +130,7 @@ export default function Home() {
             <p className="p-2">Abajo encontrarás una pequeña forma para que ingreses tus datos de nacimiento. Al hacer esto, se te mostrará un pequeño mensaje basado en tu configuración astrológica (planetas) que podrás leer y descargar si gustas.</p>
           </div>
           <form onSubmit={handleSubmit} className="mt-5 self-start space-y-4 bg-[#1f2938cc] p-6 rounded-2xl shadow-xl shadow-black/30 w-full max-w-md relative">
-            <label>Lugar de nacimiento: <span className="italic block text-sm">(Ingresa la ciudad y selecciona de la lista de sugerencias)</span></label>
+            <label>* Lugar de nacimiento: <span className="italic block text-sm">(Ingresa la ciudad y selecciona de la lista de sugerencias)</span></label>
             <div className="relative">
               <input
                 type="text"
@@ -146,6 +140,7 @@ export default function Home() {
                 onChange={handleChange}
                 className="w-full p-2 border border-gray-500 rounded bg-gray-900 bg-opacity-40 mt-2 placeholder-opacity-50"
                 autoComplete="off"
+                required
               />
               {suggestions.length > 0 && (
                 <ul className="absolute z-10 bg-gray-700 border border-black rounded mt-1 w-full max-h-40 overflow-y-auto">
@@ -161,11 +156,12 @@ export default function Home() {
                 </ul>
               )}
             </div>
-            <label>Fecha de nacimiento:</label>
-            <input type="date" name="date" placeholder="Fecha de nacimiento" value={form.date} onChange={handleChange} className="w-full p-2 border border-gray-500 rounded bg-gray-900 bg-opacity-40 mt-2 placeholder-opacity-50" />
-            <label>Hora de nacimiento: <span className="italic block text-sm">(Si no conoces tu hora de nacimiento, no te preocupes, déjala en blanco. Aun así recibirás información valiosa)</span></label>
+            <label>* Fecha de nacimiento:</label>
+            <input type="date" name="date" placeholder="Fecha de nacimiento" value={form.date} onChange={handleChange} className="w-full p-2 border border-gray-500 rounded bg-gray-900 bg-opacity-40 mt-2 placeholder-opacity-50" required />
+            <label>Hora de nacimiento: <span className="italic block text-sm">(Opcional. Si no conoces tu hora de nacimiento, no te preocupes, déjala en blanco. Aun así recibirás información valiosa)</span></label>
             <input type="time" name="time" placeholder="Hora de nacimiento" value={form.time} onChange={handleChange} className="w-full p-2 border border-gray-500 rounded bg-gray-900 bg-opacity-40 mt-2 placeholder-opacity-50" />
             <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full">Obtener mi lectura</button>
+            <label><span className="italic block text-sm">* Campos requeridos</span></label>
           </form>
         </>
       )}
